@@ -7,12 +7,13 @@ entity CSR_tester is
             o_clk        : out  std_logic;
             o_rst        : out  std_logic;
             o_write_en   : out  std_logic;
-            o_write_addr : out  std_logic_vector(4 downto 0);
-            o_read_addr1 : out  std_logic_vector(4 downto 0);
-            o_read_addr2 : out  std_logic_vector(4 downto 0);
+            o_write_addr : out  std_logic_vector(11 downto 0);
+            o_read_addr1 : out  std_logic_vector(11 downto 0);
+            o_read_addr2 : out  std_logic_vector(11 downto 0);
             o_write_data : out  std_logic_vector(31 downto 0);
             i_read_data1 : in std_logic_vector(31 downto 0);
-            i_read_data2 : in std_logic_vector(31 downto 0)
+            i_read_data2 : in std_logic_vector(31 downto 0);
+	    i_prog_cnt   : in std_logic_vector(31 downto 0)
     );
 end CSR_tester;
 
@@ -42,15 +43,15 @@ begin
         o_rst <= '0';
 
     	o_write_en <= '0';
-   	o_write_addr <= "00001";
-    	o_read_addr1 <= "00001";
-    	o_read_addr2 <= "00001";
+   	o_write_addr <= x"001";
+    	o_read_addr1 <= x"001";
+    	o_read_addr2 <= x"001";
     	o_write_data <= x"AAAAAAAA";
 
         o_write_en   <= '1';
 	wait_clk(1);
 
-        o_write_addr <= "00101";
+        o_write_addr <= x"005";
         o_write_data <= x"AAAAAAAA";
         wait_clk(1);
 
@@ -60,41 +61,26 @@ begin
 	o_write_en   <= '1';
 	wait_clk(1);
 
-        o_write_addr <= "00000";
+        o_write_addr <= x"000";
         o_write_data <= x"AAAAAAAA";
         wait_clk(1);
 
         o_write_en <= '0';
         wait_clk(1);
 
-	o_read_addr1 <= "00000";
-        o_read_addr2 <= "00000";
+	o_read_addr1 <= x"000";
+        o_read_addr2 <= x"000";
         wait_clk(1);
 
-        o_read_addr1 <= "00101";
-        o_read_addr2 <= "00101";
-        wait_clk(1);
-
-	o_read_addr1 <= "11111";
-       	wait_clk(1);
-	o_read_addr1 <= "00001";
-
-	o_read_addr1 <= "11111";
-        wait_clk(1);
-	o_read_addr1 <= "00001";
-
-	o_read_addr1 <= "11111";
-        wait_clk(1);
-	o_read_addr1 <= "00001";
-
-	o_read_addr1 <= "00000";
+        o_read_addr1 <= x"005";
+        o_read_addr2 <= x"005";
         wait_clk(1);
 
         o_rst <= '1';
         wait_clk(1);
         o_rst <= '0';
 
-        o_read_addr1 <= "00101";
+        o_read_addr1 <= x"105";
         wait_clk(1);
 
         wait;

@@ -7,30 +7,21 @@ entity InstructionMemory is
     port (
         i_clk       : in  std_logic;
         i_read_addr : in  std_logic_vector(15 downto 0);
-        o_read_data : out std_logic_vector(31 downto 0);
-	i_mem_init  : in  memory_array -- port to initialize memory
+        o_read_data : out std_logic_vector(31 downto 0)
+	-- i_mem_init  : in  memory_array -- port to initialize memory
     );
 end InstructionMemory;
 
 architecture inst_mem_beh of InstructionMemory is
-    -- type memory_array is array (0 to 65535) of std_logic_vector(31 downto 0);
     signal mem : memory_array := (others => (others => '0'));
 
     signal read_addr_reg : std_logic_vector(15 downto 0) := (others => '0');
 begin
-    process(i_mem_init)
-    begin
-        if i_mem_init'length > 0 then
-            mem <= i_mem_init; -- load data
-        end if;
-    end process;
 
-    process(i_clk)
+    process(i_clk, i_read_addr)
     begin
         if rising_edge(i_clk) then
-            read_addr_reg <= i_read_addr;
+            o_read_data <= mem(to_integer(unsigned(i_read_addr)));
         end if;
     end process;
-
-    o_read_data <= mem(to_integer(unsigned(read_addr_reg)));
 end inst_mem_beh;
