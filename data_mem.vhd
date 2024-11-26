@@ -33,10 +33,10 @@ begin
      
     process (i_clk, memory)
     begin
-        if rising_edge(i_clk) then
-            if i_rst = '1' then
-                memory <= (others => (others => '0'));  
-            elsif i_write_en  = '1' then
+	if i_rst = '1' then
+                memory <= (others => (others => '0')); 
+        elsif rising_edge(i_clk) then
+            if i_write_en  = '1' then
                 memory(to_integer(unsigned(i_write_addr))) <= i_write_data;
             end if;
         end if;

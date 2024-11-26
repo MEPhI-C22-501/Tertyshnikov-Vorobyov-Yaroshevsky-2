@@ -43,15 +43,15 @@ begin
     begin
 	if i_rst = '1' then
         	registers <= (others => (others => '0'));
+		prog_cnt_sig <= 0;
 	elsif rising_edge(i_clk) then
-		o_prog_cnt <= std_logic_vector(to_unsigned(prog_cnt_sig, 32));
 		prog_cnt_sig <= prog_cnt_sig + 1;
 
         	if i_write_en  = '1' AND i_write_addr /= x"000" then
                 	registers(to_integer(unsigned(i_write_addr))) <= i_write_data;
             	end if;
-		
         end if;
+	o_prog_cnt <= std_logic_vector(to_unsigned(prog_cnt_sig, 32));
     end process;
 
 end csr_beh;
