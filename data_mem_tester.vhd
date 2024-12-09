@@ -6,7 +6,7 @@ entity data_mem_tester is
     port (
             o_clk        : out  std_logic;
             o_rst        : out  std_logic;
-            o_write_en   : out  std_logic;
+            o_write_enable   : out  std_logic;
             o_write_addr : out  std_logic_vector(15 downto 0);
             o_read_addr1 : out  std_logic_vector(15 downto 0);
             o_read_addr2 : out  std_logic_vector(15 downto 0);
@@ -41,20 +41,20 @@ begin
         wait_clk(1);
         o_rst <= '0';
 
-    	o_write_en <= '0';
+    	o_write_enable <= '0';
    	o_write_addr <= x"0000";
     	o_read_addr1 <= x"0000";
     	o_read_addr2 <= x"0000";
     	o_write_data <= x"AAAAAAAA";
 
-        o_write_en   <= '1';
+        o_write_enable   <= '1';
 	wait_clk(1);
 
         o_write_addr <= x"AAAA";
         o_write_data <= x"AAAAAAAA";
         wait_clk(1);
 
-        o_write_en <= '0';
+        o_write_enable <= '0';
         wait_clk(1);
 
         o_read_addr1 <= x"AAAA";

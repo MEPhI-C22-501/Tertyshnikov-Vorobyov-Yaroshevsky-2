@@ -9,7 +9,7 @@ architecture data_mem_tb_arch of data_mem_tb is
 
     	signal clk_sig        : std_logic := '0';
     	signal rst_sig        : std_logic := '0';
-    	signal write_en_sig   : std_logic := '0';
+    	signal write_enable_sig   : std_logic := '0';
     	signal write_addr_sig : std_logic_vector(15 downto 0) := (others => '0');
     	signal read_addr1_sig : std_logic_vector(15 downto 0) := (others => '0');
     	signal read_addr2_sig : std_logic_vector(15 downto 0) := (others => '0');
@@ -21,7 +21,7 @@ architecture data_mem_tb_arch of data_mem_tb is
 	port (
 		i_clk        : in  std_logic;
         	i_rst        : in  std_logic;
- 	       	i_write_en   : in  std_logic;
+ 	       	i_write_enable   : in  std_logic;
         	i_write_addr : in  std_logic_vector(15 downto 0);
         	i_read_addr1 : in  std_logic_vector(15 downto 0);
         	i_read_addr2 : in  std_logic_vector(15 downto 0);
@@ -35,7 +35,7 @@ architecture data_mem_tb_arch of data_mem_tb is
 	port (
 		o_clk        : out  std_logic;
             	o_rst        : out  std_logic;
-            	o_write_en   : out  std_logic;
+            	o_write_enable   : out  std_logic;
             	o_write_addr : out  std_logic_vector(15 downto 0);
             	o_read_addr1 : out  std_logic_vector(15 downto 0);
             	o_read_addr2 : out  std_logic_vector(15 downto 0);
@@ -51,7 +51,7 @@ begin
 t1: data_mem_tester port map(
 	o_clk => clk_sig,
 	o_rst => rst_sig,
-	o_write_en => write_en_sig,
+	o_write_enable => write_enable_sig,
 	o_write_addr => write_addr_sig,
 	o_read_addr1 => read_addr1_sig,
 	o_read_addr2 => read_addr2_sig,
@@ -63,7 +63,7 @@ t1: data_mem_tester port map(
 t2: DataMemory port map(
 	i_clk => clk_sig,
 	i_rst => rst_sig,
-	i_write_en => write_en_sig,
+	i_write_enable => write_enable_sig,
 	i_write_addr => write_addr_sig,
 	i_read_addr1 => read_addr1_sig,
 	i_read_addr2 => read_addr2_sig,

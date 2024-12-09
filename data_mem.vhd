@@ -7,7 +7,7 @@ entity DataMemory is
     port (
         i_clk        : in  std_logic;
         i_rst        : in  std_logic;
-        i_write_en   : in  std_logic;
+        i_write_enable   : in  std_logic;
         i_write_addr : in  std_logic_vector(15 downto 0);
         i_read_addr1 : in  std_logic_vector(15 downto 0);
         i_read_addr2 : in  std_logic_vector(15 downto 0);
@@ -36,7 +36,7 @@ begin
 	if i_rst = '1' then
                 memory <= (others => (others => '0')); 
         elsif rising_edge(i_clk) then
-            if i_write_en  = '1' then
+            if i_write_enable  = '1' then
                 memory(to_integer(unsigned(i_write_addr))) <= i_write_data;
             end if;
         end if;
