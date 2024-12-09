@@ -1,21 +1,19 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use work.csr_mem_pkg.all;
 
 entity CSR_tester is
-    port (
+    	port (
             	o_clk        : out    std_logic;
             	o_rst        : out    std_logic;
-            	o_reg_we     : out    std_logic;
-            	o_write_addr : out    std_logic_vector(11 downto 0);
-            	o_read_addr1 : out    std_logic_vector(11 downto 0);
-            	o_read_addr2 : out    std_logic_vector(11 downto 0);
-            	o_write_data : out    std_logic_vector(31 downto 0);
-	    	o_rs1        : out    std_logic_vector(31 downto 0);
+		o_program_counter   : out std_logic_vector(31 downto 0);
+		o_rs1        : out    std_logic_vector(31 downto 0);
 		o_rs2        : out    std_logic_vector(31 downto 0);
 		o_rd         : out    std_logic_vector(31 downto 0);
-		o_csr_we     : out    std_logic
-    );
+		o_csr_write_enable     : out     std_logic;
+		o_csr_array : out csr_array
+    	);
 end CSR_tester;
 
 architecture CSR_tester_arch of CSR_tester is
@@ -43,54 +41,18 @@ begin
         wait_clk(1);
         o_rst <= '0';
 
-    	o_reg_we <= '0';
-   	o_write_addr <= x"001";
-    	o_read_addr1 <= x"001";
-    	o_read_addr2 <= x"001";
-    	o_write_data <= x"AAAAAAAA";
-	o_csr_we <= '0';
+	o_csr_write_enable <= '1';
+	o_program_counter <= x"00009999";
+	o_rs1 <= x"00009999";
+	o_rs2 <= x"00009999";
+	o_rd  <= x"00009999";
 
-	o_rs1 <= x"00000001";
-	o_rs2 <= x"00000002";
-	o_rd <= x"00000003";
-	o_csr_we <= '1';
-	wait_clk(1);
-	o_csr_we <= '0';
+	for i in 31 downto 0 loop
+		o_csr_array(i) <= std_logic_vector(to_unsigned(i, 32));
+	end loop;
+	
+	o_csr_write_enable <= '0';
 
-        o_reg_we   <= '1';
-	wait_clk(1);
-
-        o_write_addr <= x"005";
-        o_write_data <= x"AAAAAAAA";
-        wait_clk(1);
-
-        o_reg_we <= '0';
-        wait_clk(1);
-
-	o_reg_we   <= '1';
-	wait_clk(1);
-
-        o_write_addr <= x"000";
-        o_write_data <= x"AAAAAAAA";
-        wait_clk(1);
-
-        o_reg_we <= '0';
-        wait_clk(1);
-
-	o_read_addr1 <= x"000";
-        o_read_addr2 <= x"000";
-        wait_clk(1);
-
-        o_read_addr1 <= x"005";
-        o_read_addr2 <= x"005";
-        wait_clk(1);
-
-        o_rst <= '1';
-        wait_clk(1);
-        o_rst <= '0';
-
-        o_read_addr1 <= x"105";
-        wait_clk(1);
         wait;
     end process;
 
