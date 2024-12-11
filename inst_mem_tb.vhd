@@ -23,9 +23,9 @@ architecture inst_mem_tb_arch of inst_mem_tb is
 	);
     end component;
 
-    signal clk_sig       : std_logic := '0';
-    signal read_addr_sig : std_logic_vector(15 downto 0) := (others => '0');
-    signal read_data_sig : std_logic_vector(31 downto 0);
+    signal clk_r       : std_logic := '0';
+    signal read_addr_r : std_logic_vector(15 downto 0) := (others => '0');
+    signal read_data_r : std_logic_vector(31 downto 0);
 
 begin         
 
@@ -33,17 +33,17 @@ begin
 
 t1: InstructionMemory
         port map (
-            i_clk       => clk_sig,
-            i_read_addr => read_addr_sig,
-            o_read_data => read_data_sig
+            i_clk       => clk_r,
+            i_read_addr => read_addr_r,
+            o_read_data => read_data_r
         );
 
 
     t2: inst_mem_tester
         port map (
-            o_clk       => clk_sig,
-            o_read_addr => read_addr_sig,
-            i_read_data => read_data_sig
+            o_clk       => clk_r,
+            o_read_addr => read_addr_r,
+            i_read_data => read_data_r
         );
 
 end inst_mem_tb_arch;

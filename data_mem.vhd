@@ -7,11 +7,14 @@ entity DataMemory is
     port (
         i_clk        : in  std_logic;
         i_rst        : in  std_logic;
-        i_write_enable   : in  std_logic;
-        i_write_addr : in  std_logic_vector(15 downto 0);
+        i_write_enable1 : in  std_logic;
+	i_write_enable2 : in std_logic;
+        i_write_addr1 : in  std_logic_vector(15 downto 0);
+	i_write_addr2 : in  std_logic_vector(15 downto 0);
         i_read_addr1 : in  std_logic_vector(15 downto 0);
         i_read_addr2 : in  std_logic_vector(15 downto 0);
-        i_write_data : in  std_logic_vector(31 downto 0);
+        i_write_data1 : in  std_logic_vector(31 downto 0);
+	i_write_data2 : in  std_logic_vector(31 downto 0);
         o_read_data1 : out std_logic_vector(31 downto 0);
         o_read_data2 : out std_logic_vector(31 downto 0)
     );
@@ -22,7 +25,7 @@ architecture DataMemory_beh of DataMemory is
 
 begin
      
-    process (i_read_addr1, i_read_addr2, memory, i_clk)
+    process (i_clk)
     begin
 	if rising_edge(i_clk) then
         	o_read_data1 <= memory(to_integer(unsigned(i_read_addr1)));
@@ -31,13 +34,19 @@ begin
     end process;
 
      
-    process (i_clk, memory)
+    process (i_clk, i_rst)
     begin
 	if i_rst = '1' then
+		-- synthesis off
                 memory <= (others => (others => '0')); 
+		-- synthesis on
         elsif rising_edge(i_clk) then
-            if i_write_enable  = '1' then
-                memory(to_integer(unsigned(i_write_addr))) <= i_write_data;
+            if i_write_enable1  = '1' then
+                memory(to_integer(unsigned(i_write_addr1))) <= i_write_data1;
+            end if;
+	
+	    if i_write_enable2  = '1' then
+                memory(to_integer(unsigned(i_write_addr2))) <= i_write_data2;
             end if;
         end if;
     end process;

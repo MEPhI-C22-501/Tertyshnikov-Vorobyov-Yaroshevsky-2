@@ -12,7 +12,7 @@ entity inst_mem_tester is
 end inst_mem_tester;
 
 architecture inst_mem_tester_arch of inst_mem_tester is
-    signal clk_sig       : std_logic := '0';
+    signal clk_r       : std_logic := '0';
     constant clk_period : time := 10 ns;
 
 
@@ -20,15 +20,15 @@ architecture inst_mem_tester_arch of inst_mem_tester is
         variable ii: integer := 0;
         begin
         while ii < j loop
-            if (rising_edge(clk_sig)) then
+            if (rising_edge(clk_r)) then
                 ii := ii + 1;
             end if;
             wait for 10 ps;
         end loop;
     end;
 begin
-    clk_sig <= not clk_sig after clk_period / 2;
-    o_clk <= clk_sig;
+    clk_r <= not clk_r after clk_period / 2;
+    o_clk <= clk_r;
 
     process
     begin

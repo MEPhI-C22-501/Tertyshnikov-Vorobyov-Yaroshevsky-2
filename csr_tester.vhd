@@ -8,23 +8,27 @@ entity CSR_tester is
             	o_clk        : out    std_logic;
             	o_rst        : out    std_logic;
 		o_program_counter   : out std_logic_vector(31 downto 0);
+		o_program_counter_write_enable : out std_logic;
 		o_rs1        : out    std_logic_vector(31 downto 0);
+		o_rs1_write_enable : out std_logic;
 		o_rs2        : out    std_logic_vector(31 downto 0);
+		o_rs2_write_enable : out std_logic;
 		o_rd         : out    std_logic_vector(31 downto 0);
-		o_csr_write_enable     : out     std_logic;
+		o_rd_write_enable : out std_logic;
+		o_csr_array_write_enable     : out     std_logic_vector(31 downto 0);
 		o_csr_array : out csr_array
     	);
 end CSR_tester;
 
 architecture CSR_tester_arch of CSR_tester is
     constant clk_period : time := 10 ns;
-    signal clk_sig : std_logic := '0';
+    signal clk_r : std_logic := '0';
 
     procedure wait_clk(constant j: in integer) is 
         variable ii: integer := 0;
         begin
         while ii < j loop
-            if (rising_edge(clk_sig)) then
+            if (rising_edge(clk_r)) then
                 ii := ii + 1;
             end if;
             wait for 10 ps;
@@ -32,26 +36,45 @@ architecture CSR_tester_arch of CSR_tester is
     end;
 
 begin
-    clk_sig <= not clk_sig after clk_period / 2;
-    o_clk <= clk_sig;
+    clk_r <= not clk_r after clk_period / 2;
+    o_clk <= clk_r;
 
     process
     begin
 	o_rst <= '1';
-        wait_clk(1);
+        wait for 1 ns;
         o_rst <= '0';
 
-	o_csr_write_enable <= '1';
 	o_program_counter <= x"00009999";
 	o_rs1 <= x"00009999";
 	o_rs2 <= x"00009999";
 	o_rd  <= x"00009999";
+	o_program_counter_write_enable <= '1';
+	o_rs1_write_enable <= '1';
+	o_rs2_write_enable <= '1';
+	o_rd_write_enable <= '1';
+	o_program_counter_write_enable <= '1';
+	wait_clk(1);
+	o_rs1_write_enable <= '0';
+	o_rs2_write_enable <= '0';
+	o_rd_write_enable <= '0';
+	o_program_counter_write_enable <= '0';
+	wait_clk(1);	
 
 	for i in 31 downto 0 loop
 		o_csr_array(i) <= std_logic_vector(to_unsigned(i, 32));
+		o_csr_array_write_enable(i) <= '1';
 	end loop;
-	
-	o_csr_write_enable <= '0';
+	wait_clk(1);
+
+	for i in 31 downto 0 loop
+		o_csr_array_write_enable(i) <= '0';
+	end loop;
+	wait_clk(10);
+
+	o_rst <= '1';
+        wait for 1 ns;
+        o_rst <= '0';
 
         wait;
     end process;
