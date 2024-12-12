@@ -89,13 +89,6 @@ begin
 				registers(i) <= i_csr_array(i);
 			end if;
 		end loop;
-
-		
-		for i in 2 to 31 loop
-			if i_csr_array_write_enable(i) = '1' then
-				registers(i) <= i_csr_array(i);
-			end if;
-		end loop;
 	end if;
     end process;
 
