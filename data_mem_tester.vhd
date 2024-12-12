@@ -6,16 +6,11 @@ entity data_mem_tester is
     	port (
             	o_clk        : out  std_logic;
             	o_rst        : out  std_logic;
-            	o_write_enable1 : out  std_logic;
-		o_write_enable2 : out  std_logic;
-            	o_write_addr1 : out  std_logic_vector(15 downto 0);
-		o_write_addr2 : out  std_logic_vector(15 downto 0);
-            	o_read_addr1 : out  std_logic_vector(15 downto 0);
-            	o_read_addr2 : out  std_logic_vector(15 downto 0);
-            	o_write_data1 : out  std_logic_vector(31 downto 0);
-		o_write_data2 : out  std_logic_vector(31 downto 0);
-            	i_read_data1 : in std_logic_vector(31 downto 0);
-            	i_read_data2 : in std_logic_vector(31 downto 0)
+            	o_write_enable : out  std_logic;
+            	o_write_addr : out  std_logic_vector(15 downto 0);
+            	o_read_addr : out  std_logic_vector(15 downto 0);
+            	o_write_data : out  std_logic_vector(31 downto 0);
+            	i_read_data : in std_logic_vector(31 downto 0)
     	);
 end data_mem_tester;
 
@@ -44,57 +39,29 @@ begin
         wait for 1 ns;
         o_rst <= '0';
 
-    	o_write_enable1 <= '0';
-	o_write_enable2 <= '0';
-   	o_write_addr1 <= x"0000";
-    	o_read_addr1 <= x"0000";
-    	o_write_data1 <= x"AAAAAAAA";
+    	o_write_enable <= '0';
+   	o_write_addr <= x"0000";
+    	o_read_addr <= x"0000";
+    	o_write_data <= x"AAAAAAAA";
 
-        o_write_enable1 <= '1';
+        o_write_enable <= '1';
 	wait_clk(1);
 
-        o_write_addr1 <= x"AAAA";
-        o_write_data1 <= x"AAAAAAAA";
+        o_write_addr <= x"AAAA";
+        o_write_data <= x"AAAAAAAA";
         wait_clk(1);
 
-        o_write_enable1 <= '0';
+        o_write_enable <= '0';
         wait_clk(1);
 
-        o_read_addr1 <= x"AAAA";
+        o_read_addr <= x"AAAA";
         wait_clk(1);
 
         o_rst <= '1';
         wait for 1 ns;
         o_rst <= '0';
 
-        o_read_addr1 <= x"AAAA";
-        wait_clk(1);
-
-	o_write_enable2 <= '0';
-   	o_write_addr2 <= x"0000";
-    	o_read_addr2 <= x"0000";
-    	o_write_data2 <= x"AAAAAAAA";
-
-        o_write_enable2 <= '1';
-	wait_clk(1);
-
-        o_write_addr2 <= x"AAAA";
-        o_write_data2 <= x"AAAAAAAA";
-        wait_clk(1);
-
-        o_write_enable2 <= '0';
-        wait_clk(1);
-
-        o_read_addr2 <= x"AAAA";
-        wait_clk(1);
-
-        o_rst <= '1';
-        wait for 1 ns;
-        o_rst <= '0';
-
-        o_read_addr2 <= x"AAAA";
-        wait_clk(1);
-
+        o_read_addr <= x"AAAA";
         wait;
     end process;
 

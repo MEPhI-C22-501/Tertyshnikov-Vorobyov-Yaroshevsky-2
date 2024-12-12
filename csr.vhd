@@ -65,9 +65,9 @@ begin
 		rs1_r <= x"00000000";
 		rs2_r <= x"00000000";
 		rd_r <= x"00000000";
-		-- synthesis off
+		-- pragma synthesis_off
 		registers <= (others => (others => '0'));
-		-- synthesis on
+		-- pragma synthesis_on
 	elsif rising_edge(i_clk) then
 		program_counter_r <= program_counter_r + '1';
 

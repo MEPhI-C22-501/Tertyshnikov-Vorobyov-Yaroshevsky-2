@@ -19,15 +19,12 @@ architecture inst_mem_beh of InstructionMemory is
 	signal read_data_r : std_logic_vector(31 downto 0);
 	
 begin
+	o_read_data <= read_data_r;
+
 	process(i_clk)
 	begin
-		read_data_r <= mem(to_integer(unsigned(i_read_addr)));
+		if rising_edge(i_clk) then
+			read_data_r <= mem(to_integer(unsigned(i_read_addr)));
+		end if;
 	end process;
-
-    process(i_clk)
-    begin
-        if rising_edge(i_clk) then
-            o_read_data <= read_data_r;
-        end if;
-    end process;
 end inst_mem_beh;
