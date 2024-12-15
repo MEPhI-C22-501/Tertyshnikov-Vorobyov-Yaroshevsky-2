@@ -9,12 +9,6 @@ entity CSR_tester is
             	o_rst        : out    std_logic;
 		o_program_counter   : out std_logic_vector(15 downto 0);
 		o_program_counter_write_enable : out std_logic;
-		o_rs1        : out    std_logic_vector(31 downto 0);
-		o_rs1_write_enable : out std_logic;
-		o_rs2        : out    std_logic_vector(31 downto 0);
-		o_rs2_write_enable : out std_logic;
-		o_rd         : out    std_logic_vector(31 downto 0);
-		o_rd_write_enable : out std_logic;
 		o_csr_array_write_enable     : out     std_logic_vector(31 downto 0);
 		o_csr_array : out csr_array
     	);
@@ -47,17 +41,8 @@ begin
         o_rst <= '0';
 
 	o_program_counter <= x"9999";
-	o_rs1 <= x"00009999";
-	o_rs2 <= x"00009999";
-	o_rd  <= x"00009999";
 	o_program_counter_write_enable <= '1';
-	o_rs1_write_enable <= '1';
-	o_rs2_write_enable <= '1';
-	o_rd_write_enable <= '1';
 	wait_clk(1);
-	o_rs1_write_enable <= '0';
-	o_rs2_write_enable <= '0';
-	o_rd_write_enable <= '0';
 	o_program_counter_write_enable <= '0';
 	wait_clk(1);	
 
