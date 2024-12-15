@@ -5,6 +5,10 @@ library work;
 use work.inst_mem_pkg.all;
 
 entity InstructionMemory is
+	generic (
+		file_path : string := "program.hex"
+	);
+
     port (
         i_clk       : in  std_logic;
         i_read_addr : in  std_logic_vector(15 downto 0);
@@ -15,7 +19,7 @@ end InstructionMemory;
 architecture inst_mem_beh of InstructionMemory is
     	signal read_addr_reg : std_logic_vector(15 downto 0) := (others => '0');
 
-	signal mem : memory_array := read_hex_from_file("program.hex");
+	signal mem : memory_array := read_hex_from_file(file_path);
 	signal read_data_r : std_logic_vector(31 downto 0);
 	
 begin

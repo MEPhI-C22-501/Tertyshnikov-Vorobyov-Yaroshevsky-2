@@ -32,6 +32,9 @@ begin
 
 
 t1: InstructionMemory
+	generic map (
+		file_path => "program.hex"
+	)
         port map (
             i_clk       => clk_r,
             i_read_addr => read_addr_r,
