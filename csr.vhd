@@ -10,8 +10,8 @@ entity CSR is
         i_clk        : in     std_logic;
         i_rst                  : in     std_logic;
 	i_program_counter_write_enable : std_logic;
-	i_program_counter : in std_logic_vector(31 downto 0);
-	o_program_counter   : out std_logic_vector(31 downto 0);
+	i_program_counter : in std_logic_vector(15 downto 0);
+	o_program_counter   : out std_logic_vector(15 downto 0);
 	i_rs1_write_enable : std_logic;
 	i_rs1        : in     std_logic_vector(31 downto 0);
 	i_rs2_write_enable : std_logic;
@@ -29,7 +29,7 @@ end CSR;
 
 architecture csr_beh of CSR is
     	signal registers : csr_array := (others => (others => '0'));
-	signal program_counter_r : std_logic_vector(31 downto 0) := (others => '0');
+	signal program_counter_r : std_logic_vector(15 downto 0) := (others => '0');
 	signal rs1_r : std_logic_vector(31 downto 0) := (others => '0');
 	signal rs2_r : std_logic_vector(31 downto 0) := (others => '0');
 	signal rd_r  : std_logic_vector(31 downto 0) := (others => '0');
