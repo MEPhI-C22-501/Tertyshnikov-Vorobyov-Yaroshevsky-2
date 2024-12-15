@@ -35,7 +35,7 @@ architecture csr_beh of CSR is
 	signal rd_r  : std_logic_vector(31 downto 0) := (others => '0');
 
 begin     
-    process (i_clk)
+    process (i_clk, i_rst)
     begin
 	if i_program_counter_write_enable = '0' then
 		o_program_counter <= program_counter_r;
@@ -50,8 +50,8 @@ begin
 		o_rd <= rd_r;
 	end if;
 
-	o_csr_array(1) <= (others => '0');
-	for i in 2 to 31 loop
+	o_csr_array(0) <= (others => '0');
+	for i in 1 to 31 loop
 		if i_csr_array_write_enable(i) = '0' then
 			o_csr_array(i) <= registers(i);
 		end if;
@@ -84,7 +84,7 @@ begin
 			rd_r <= i_rd;
 		end if;
 
-		for i in 2 to 31 loop
+		for i in 1 to 31 loop
 			if i_csr_array_write_enable(i) = '1' then
 				registers(i) <= i_csr_array(i);
 			end if;

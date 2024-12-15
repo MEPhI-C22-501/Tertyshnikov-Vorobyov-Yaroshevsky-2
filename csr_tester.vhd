@@ -42,6 +42,7 @@ begin
     process
     begin
 	o_rst <= '1';
+	wait_clk(3);
         wait for 1 ns;
         o_rst <= '0';
 
@@ -73,6 +74,7 @@ begin
 	wait_clk(10);
 
 	o_rst <= '1';
+	wait_clk(3);
         wait for 1 ns;
         o_rst <= '0';
 

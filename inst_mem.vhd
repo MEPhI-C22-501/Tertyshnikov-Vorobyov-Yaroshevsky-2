@@ -19,7 +19,7 @@ end InstructionMemory;
 architecture inst_mem_beh of InstructionMemory is
     	signal read_addr_reg : std_logic_vector(15 downto 0) := (others => '0');
 
-	signal mem : memory_array := read_hex_from_file(file_path);
+	signal mem : inst_array := read_hex_from_file(file_path);
 	signal read_data_r : std_logic_vector(31 downto 0);
 	
 begin

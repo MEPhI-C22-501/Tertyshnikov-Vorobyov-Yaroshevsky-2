@@ -4,9 +4,10 @@ use IEEE.NUMERIC_STD.ALL;
 use STD.TEXTIO.ALL;
 
 package inst_mem_pkg is
-    	type memory_array is array (0 to 65535) of std_logic_vector(31 downto 0);
+	type memory_array is array (0 to 262143) of std_logic_vector(7 downto 0);
+    	type inst_array is array (0 to 65535) of std_logic_vector(31 downto 0);
 	function string_to_int(x_str : string; radix : positive range 2 to 36 := 10) return integer;
-	function read_hex_from_file(file_name: string) return memory_array;
+	function read_hex_from_file(file_name: string) return inst_array;
 end inst_mem_pkg;
 
 package body inst_mem_pkg is
@@ -83,10 +84,10 @@ package body inst_mem_pkg is
     
   end function;
 
-	function read_hex_from_file(file_name: string) return memory_array is
+	function read_hex_from_file(file_name: string) return inst_array is
         file input_file: text open read_mode is file_name;
         variable line_buffer: line;
-        variable result: memory_array;
+        variable result: inst_array;
         variable line_count: natural := 0;
     begin
         while not endfile(input_file) loop
