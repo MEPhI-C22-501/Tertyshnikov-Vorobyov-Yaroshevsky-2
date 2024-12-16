@@ -7,10 +7,8 @@ entity CSR_tester is
     	port (
             	o_clk        : out    std_logic;
             	o_rst        : out    std_logic;
-		o_program_counter   : out std_logic_vector(15 downto 0);
-		o_program_counter_write_enable : out std_logic;
 		o_csr_write_enable     : out     std_logic;
-		o_csr_data : out std_logic_vector(31 downto 0);
+		o_csr_array : out csr_array;
 		o_csr_number : out std_logic_vector(4 downto 0)
     	);
 end CSR_tester;
@@ -36,27 +34,23 @@ begin
 
     process
     begin
+	o_csr_array <= (others => (others => '0'));
+
 	o_rst <= '1';
 	wait_clk(2);
         wait for 1 ns;
         o_rst <= '0';
 	wait_clk(1);
 
-	o_program_counter <= x"9999";
-	o_program_counter_write_enable <= '1';
-	wait_clk(1);
-	o_program_counter_write_enable <= '0';
-	wait_clk(1);	
-
 	o_csr_number <= "11111";
-	o_csr_data <= x"AAAAAAAA";
+	o_csr_array(31) <= x"AAAAAAAA";
 	o_csr_write_enable <= '1';
 	wait_clk(1);
 	o_csr_write_enable <= '0';
 	wait_clk(1);
 
 	o_csr_number <= "11110";
-	o_csr_data <= x"BBBBBBBB";
+	o_csr_array(30) <= x"BBBBBBBB";
 	o_csr_write_enable <= '1';
 	wait_clk(1);
 	o_csr_write_enable <= '0';

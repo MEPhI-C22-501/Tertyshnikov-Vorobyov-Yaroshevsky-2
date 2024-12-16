@@ -8,11 +8,9 @@ entity CSR is
     port (
         i_clk        : in     std_logic;
         i_rst                  : in     std_logic;
-	i_program_counter_write_enable : in std_logic;
-	i_program_counter : in std_logic_vector(15 downto 0);
 	o_program_counter   : out std_logic_vector(15 downto 0);
 	i_csr_write_enable : in std_logic;
-	i_csr_data : in std_logic_vector(31 downto 0);
+	i_csr_array : in csr_array;
 	i_csr_number : in std_logic_vector(4 downto 0);
 	o_csr_array : out csr_array
     );
@@ -29,6 +27,7 @@ begin
 	o_csr_array(31 downto 1) <= registers(31 downto 1);
      
     process (i_clk, i_rst)
+	variable register_number : integer := 0;
     begin
 	if i_rst = '1' then
 		program_counter_r <= (others => '0');
@@ -38,12 +37,9 @@ begin
 	elsif rising_edge(i_clk) then
 		program_counter_r <= program_counter_r + '1';
 
-		if i_program_counter_write_enable = '1' then
-			program_counter_r <= i_program_counter;
-		end if;
-
 		if i_csr_write_enable = '1' then
-			registers(to_integer(unsigned(i_csr_number))) <= i_csr_data;
+			register_number := to_integer(unsigned(i_csr_number));
+			registers(register_number) <= i_csr_array(register_number);
 		end if;
 	end if;
     end process;
