@@ -9,8 +9,9 @@ entity CSR_tester is
             	o_rst        : out    std_logic;
 		o_program_counter   : out std_logic_vector(15 downto 0);
 		o_program_counter_write_enable : out std_logic;
-		o_csr_array_write_enable     : out     std_logic_vector(31 downto 0);
-		o_csr_array : out csr_array
+		o_csr_write_enable     : out     std_logic;
+		o_csr_data : out std_logic_vector(31 downto 0);
+		o_csr_number : out std_logic_vector(4 downto 0)
     	);
 end CSR_tester;
 
@@ -47,26 +48,18 @@ begin
 	o_program_counter_write_enable <= '0';
 	wait_clk(1);	
 
-	for i in 15 downto 0 loop
-		o_csr_array(i) <= std_logic_vector(to_unsigned(i, 32));
-		o_csr_array_write_enable(i) <= '1';
-	end loop;
+	o_csr_number <= "11111";
+	o_csr_data <= x"AAAAAAAA";
+	o_csr_write_enable <= '1';
+	wait_clk(1);
+	o_csr_write_enable <= '0';
 	wait_clk(1);
 
-	for i in 15 downto 0 loop
-		o_csr_array_write_enable(i) <= '0';
-	end loop;
-	wait_clk(2);
-
-	for i in 31 downto 16 loop
-		o_csr_array(i) <= std_logic_vector(to_unsigned(i, 32));
-		o_csr_array_write_enable(i) <= '1';
-	end loop;
+	o_csr_number <= "11110";
+	o_csr_data <= x"BBBBBBBB";
+	o_csr_write_enable <= '1';
 	wait_clk(1);
-
-	for i in 31 downto 16 loop
-		o_csr_array_write_enable(i) <= '0';
-	end loop;
+	o_csr_write_enable <= '0';
 	wait_clk(1);
 
 	o_rst <= '1';
