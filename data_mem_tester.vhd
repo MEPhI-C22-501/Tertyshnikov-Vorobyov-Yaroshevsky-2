@@ -43,6 +43,7 @@ begin
 	wait_clk(3);
         wait for 1 ns;
         o_rst <= '0';
+	wait_clk(1);
 
     	o_write_enable <= '0';
    	o_write_addr <= ADDR0;

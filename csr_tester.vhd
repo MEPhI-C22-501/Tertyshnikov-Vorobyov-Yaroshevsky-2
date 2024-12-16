@@ -39,6 +39,7 @@ begin
 	wait_clk(2);
         wait for 1 ns;
         o_rst <= '0';
+	wait_clk(1);
 
 	o_program_counter <= x"9999";
 	o_program_counter_write_enable <= '1';
