@@ -46,16 +46,27 @@ begin
 	o_program_counter_write_enable <= '0';
 	wait_clk(1);	
 
-	for i in 31 downto 0 loop
+	for i in 15 downto 0 loop
 		o_csr_array(i) <= std_logic_vector(to_unsigned(i, 32));
 		o_csr_array_write_enable(i) <= '1';
 	end loop;
 	wait_clk(1);
 
-	for i in 31 downto 0 loop
+	for i in 15 downto 0 loop
 		o_csr_array_write_enable(i) <= '0';
 	end loop;
-	wait_clk(10);
+	wait_clk(2);
+
+	for i in 31 downto 16 loop
+		o_csr_array(i) <= std_logic_vector(to_unsigned(i, 32));
+		o_csr_array_write_enable(i) <= '1';
+	end loop;
+	wait_clk(1);
+
+	for i in 31 downto 16 loop
+		o_csr_array_write_enable(i) <= '0';
+	end loop;
+	wait_clk(1);
 
 	o_rst <= '1';
 	wait_clk(2);

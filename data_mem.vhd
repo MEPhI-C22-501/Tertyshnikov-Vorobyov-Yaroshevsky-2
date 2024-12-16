@@ -20,12 +20,12 @@ architecture DataMemory_beh of DataMemory is
 	signal data_r : std_logic_vector(31 downto 0) := (others => '0');
 
 begin
-   	o_read_data <= data_r;      
+   	o_read_data <= data_r;
 
 	process(i_clk, i_rst)
 	variable addr : integer := 0;
 	begin
-		if i_write_enable  = '0' then
+		-- if i_write_enable  = '0' then
 			addr := to_integer(unsigned(i_read_addr));
 			for i in 0 to 3 loop
 				if i + 1 > 262143 then
@@ -34,7 +34,7 @@ begin
 					data_r((i + 1) * 8 - 1 downto i * 8) <= memory(addr + i);
 				end if;
 			end loop;
-		end if;
+		-- end if;
 	end process;
 
      

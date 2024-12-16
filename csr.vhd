@@ -9,7 +9,7 @@ entity CSR is
     port (
         i_clk        : in     std_logic;
         i_rst                  : in     std_logic;
-	i_program_counter_write_enable : std_logic;
+	i_program_counter_write_enable : in std_logic;
 	i_program_counter : in std_logic_vector(15 downto 0);
 	o_program_counter   : out std_logic_vector(15 downto 0);
 	i_csr_array_write_enable : in std_logic_vector(31 downto 0);
