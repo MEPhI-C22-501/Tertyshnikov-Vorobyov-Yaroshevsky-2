@@ -1,12 +1,12 @@
 # Чтение и запись в разные виды памяти
 
 ## Писать в CSR:
-- в разрешающий сигнал (i_rs1_write_enable, i_rs2_write_enable, i_rd_write_enable, i_program_counter_write_enable или какие-либо из элементов вектора i_csr_array_write_enable) присваиваем "1"
-- выставляем на i_rs1, i_rs2, i_rd, i_program_counter, i_csr_array данные, которые хотим записать
+- в разрешающий сигнал (i_program_counter_write_enable или какие-либо из элементов вектора i_csr_array_write_enable) присваиваем "1"
+- выставляем на i_program_counter, i_csr_array данные, которые хотим записать
 - по фронту i_clk данные будут записаны
 
 ## Читать из CSR:
-- данные из i_rs1, i_rs2, i_rd, csr_array и счетчика команд доступны всегда (o_rs1, o_rs2, o_rd, o_csr_array, o_program_counter соответственно)
+- данные из csr_array и счетчика команд доступны всегда (o_csr_array, o_program_counter соответственно)
 - самый первый регистр в o_csr_array всегда возвращает 0
 - на каждом фронте тактового сигнала значение o_program_counter увеличивается на 1
 
