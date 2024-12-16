@@ -2,7 +2,6 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use work.csr_mem_pkg.all;
-use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
 entity CSR is
@@ -12,8 +11,9 @@ entity CSR is
 	i_program_counter_write_enable : in std_logic;
 	i_program_counter : in std_logic_vector(15 downto 0);
 	o_program_counter   : out std_logic_vector(15 downto 0);
-	i_csr_array_write_enable : in std_logic_vector(31 downto 0);
-	i_csr_array : in csr_array;
+	i_csr_write_enable : in std_logic;
+	i_csr_data : in std_logic_vector(31 downto 0);
+	i_csr_number : in std_logic_vector(4 downto 0);
 	o_csr_array : out csr_array
     );
 end CSR;
@@ -42,11 +42,9 @@ begin
 			program_counter_r <= i_program_counter;
 		end if;
 
-		for i in 1 to 31 loop
-			if i_csr_array_write_enable(i) = '1' then
-				registers(i) <= i_csr_array(i);
-			end if;
-		end loop;
+		if i_csr_write_enable = '1' then
+			registers(to_integer(unsigned(i_csr_number))) <= i_csr_data;
+		end if;
 	end if;
     end process;
 
