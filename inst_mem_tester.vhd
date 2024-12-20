@@ -33,7 +33,7 @@ begin
     process
     begin
 	
-        for addr in 0 to 15 loop
+        for addr in 0 to 5 loop
             o_read_addr <= std_logic_vector(to_unsigned(addr, 16));
             wait_clk(1);
         end loop;
