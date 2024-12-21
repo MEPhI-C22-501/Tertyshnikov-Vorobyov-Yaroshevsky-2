@@ -17,7 +17,7 @@ architecture DataMemory_beh of DataMemory is
     type memory_array is array (0 to 65535) of std_logic_vector(31 downto 0);
 
     signal memory : memory_array;
-	 signal data_r : std_logic_vector(31 downto 0);
+    signal data_r : std_logic_vector(31 downto 0);
     
     attribute ramstyle : string;
     attribute ramstyle of memory : signal is "M9K";
@@ -28,7 +28,7 @@ begin
 	 
     process(i_clk, i_rst)
     begin
-			if rising_edge(i_clk) then
+	if rising_edge(i_clk) then
             if i_write_enable = '0' then
                 data_r <= memory(to_integer(unsigned(i_addr)));
             end if;
@@ -37,7 +37,7 @@ begin
 
     process(i_clk, i_rst)
     begin
-			if rising_edge(i_clk) then
+	if rising_edge(i_clk) then
             if i_write_enable = '1' then
                 memory(to_integer(unsigned(i_addr))) <= i_write_data;
             end if;
