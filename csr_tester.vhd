@@ -56,6 +56,13 @@ begin
 	o_csr_write_enable <= '0';
 	wait_clk(1);
 
+	o_csr_number <= "00000";
+	o_csr_array(0) <= x"CCCCCCCC";
+	o_csr_write_enable <= '1';
+	wait_clk(1);
+	o_csr_write_enable <= '0';
+	wait_clk(1);
+
 	o_rst <= '1';
 	wait_clk(2);
         wait for 1 ns;
