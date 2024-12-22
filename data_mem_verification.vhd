@@ -25,7 +25,6 @@ architecture data_mem_verification_arch of data_mem_verification is
 	component DataMemory is
     	port (
         	i_clk           : in  std_logic;
-        	i_rst           : in  std_logic;
         	i_write_enable  : in  std_logic;
         	i_addr          : in  std_logic_vector(15 downto 0);
         	i_write_data    : in  std_logic_vector(31 downto 0);
@@ -36,8 +35,10 @@ architecture data_mem_verification_arch of data_mem_verification is
     	signal clk_r     	  : std_logic := '0';
    	signal rst_r              : std_logic := '0';
 	signal read_data_r        : std_logic_vector(31 downto 0) := (others => '0');
+	signal write_data_r       : std_logic_vector(31 downto 0) := (others => '0');
 	signal result_r           : std_logic_vector(31 downto 0) := (others => '0');
 	signal resultSrc_r        : std_logic := '1';
+	signal write_enable_r     : std_logic := '0';
 	signal data_mem_addr_r    : std_logic_vector(15 downto 0) := (others => '0');
   
     	constant clk_period : time := 10 ns;
@@ -61,10 +62,9 @@ begin
 	t1: DataMemory
 	port map (
 		i_clk => clk_r,
-        	i_rst => rst_r,
-		i_write_enable => '0',
+		i_write_enable => write_enable_r,
 		i_addr => data_mem_addr_r,
-		i_write_data => x"00000000",
+		i_write_data => write_data_r,
 		o_read_data => read_data_r
 	);
 
@@ -83,11 +83,17 @@ begin
 	process
 	begin
 		data_mem_addr_r <= (others => '0');
+		write_enable_r <= '1';
+		write_data_r <= x"BBBBBBBB";
+		wait_clk(1);
+		write_enable_r <= '0';
+		
 		rst_r <= '1';
 		wait_clk(2);
+		wait for 1 ns;
 		rst_r <= '0';
 		
-		wait_clk(1);
+		wait_clk(2);
 		resultSrc_r <= '0';
 		wait_clk(1);
 

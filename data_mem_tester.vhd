@@ -5,7 +5,6 @@ use IEEE.NUMERIC_STD.ALL;
 entity data_mem_tester is
     	port (
             	o_clk        : out  std_logic;
-            	o_rst        : out  std_logic;
             	o_write_enable : out  std_logic;
             	o_addr : out  std_logic_vector(15 downto 0);
             	o_write_data : out  std_logic_vector(31 downto 0);
@@ -38,12 +37,6 @@ begin
 
     process
     begin
-	o_rst <= '1';
-	wait_clk(3);
-        wait for 1 ns;
-        o_rst <= '0';
-	wait_clk(1);
-
     	o_write_enable <= '0';
    	o_addr <= ADDR0;
     	o_write_data <= x"AAAAAAAA";
@@ -63,11 +56,6 @@ begin
 
         o_addr <= ADDR2;
         wait_clk(1);
-
-        o_rst <= '1';
-	wait_clk(3);
-        wait for 1 ns;
-        o_rst <= '0';
 
         o_addr <= ADDR1;
         wait;

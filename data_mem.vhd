@@ -5,7 +5,6 @@ use IEEE.NUMERIC_STD.ALL;
 entity DataMemory is
     port (
         i_clk           : in  std_logic;
-        i_rst           : in  std_logic;
         i_write_enable  : in  std_logic;
         i_addr          : in  std_logic_vector(15 downto 0);
         i_write_data    : in  std_logic_vector(31 downto 0);
@@ -16,7 +15,7 @@ end DataMemory;
 architecture DataMemory_beh of DataMemory is
     type memory_array is array (0 to 65535) of std_logic_vector(31 downto 0);
 
-    signal memory : memory_array;
+    signal memory : memory_array := (others => (others => '0'));
     signal data_r : std_logic_vector(31 downto 0);
     
     attribute ramstyle : string;
@@ -26,7 +25,7 @@ begin
     o_read_data <= data_r;
 	 
 	 
-    process(i_clk, i_rst)
+    process(i_clk)
     begin
 	if rising_edge(i_clk) then
             if i_write_enable = '0' then
@@ -35,7 +34,7 @@ begin
         end if;
     end process;
 
-    process(i_clk, i_rst)
+    process(i_clk)
     begin
 	if rising_edge(i_clk) then
             if i_write_enable = '1' then
