@@ -106,7 +106,7 @@ begin
 	process
 	begin
 		rst_r <= '1';
-		wait_clk(1);
+		wait_clk(2);
 		rst_r <= '0';
 		wait;
 	end process;
