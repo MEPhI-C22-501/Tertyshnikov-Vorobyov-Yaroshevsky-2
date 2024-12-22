@@ -1,22 +1,13 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
-use work.inst_mem_pkg.all;
 use work.csr_mem_pkg.all;
 
 
-entity inst_mem_verification is
-end inst_mem_verification;
+entity csr_verification is
+end csr_verification;
 
-architecture inst_mem_verification_arch of inst_mem_verification is
-    	component InstructionMemory
-        port (
-            i_clk       : in  std_logic;
-            i_read_addr : in  std_logic_vector(15 downto 0);
-            o_read_data : out std_logic_vector(31 downto 0)
-        );
-    	end component;
-
+architecture csr_verification_arch of csr_verification is
     	component CSR is
 	port (
 		i_clk              : in  std_logic;
@@ -29,33 +20,14 @@ architecture inst_mem_verification_arch of inst_mem_verification is
 	);
 	end component;
 
-	component command_decoder_v1 is
-	port(
-  		i_clk         	: in  std_logic;
-  		i_rst         	: in  std_logic;
-  		i_instr       	: in  std_logic_vector(31 downto 0);
-  		o_r_type      	: out std_logic;
-  		o_s_type      	: out std_logic;
-  		o_i_type      	: out std_logic;
-  		o_rs1         	: out std_logic_vector(4 downto 0);
-  		o_rs2         	: out std_logic_vector(4 downto 0);
-  		o_imm		: out std_logic_vector(11 downto 0);
-  		o_rd          	: out std_logic_vector(4 downto 0);
-  		o_read_to_LSU 	: out std_logic;
-  		o_write_to_LSU 	: out std_logic;
-  		o_LSU_code	: out std_logic_vector(16 downto 0)
- 	);
-	end component;
-
     	signal clk_r     	  : std_logic := '0';
    	signal rst_r              : std_logic := '0';
    	signal csr_write_enable_r : std_logic := '0';
-    	signal program_counter_r        : std_logic_vector(15 downto 0) := (others => '0');
-    	signal read_instruction_r        : std_logic_vector(31 downto 0);
-
-
-
-    	constant clk_period : time := 10 ns;
+	signal csr_number_r       : std_logic_vector(4 downto 0) := "00000";
+    	signal program_counter_r  : std_logic_vector(15 downto 0) := (others => '0');
+    	constant clk_period       : time := 10 ns;
+	signal csr_array_r        : csr_array := (others => (others => '0'));
+	signal csr_array_res_r    : csr_array := (others => (others => '0'));
 
     	procedure wait_clk(constant j: in integer) is 
         	variable ii: integer := 0;
@@ -68,38 +40,19 @@ architecture inst_mem_verification_arch of inst_mem_verification is
         	end loop;
     	end;
 
-
 begin         
-	
 	clk_r <= not clk_r after clk_period / 2;
 	
 
-	t1: InstructionMemory
-	generic map (
-		file_path => "program.hex"
-	)
-        port map (
-            i_clk       => clk_r,
-            i_read_addr => program_counter_r,
-            o_read_data => read_instruction_r
-        );
-
-
-	t2: CSR
+	t1: CSR
 	port map (
 		i_clk => clk_r,
 		i_rst => rst_r,
 		o_program_counter => program_counter_r,
 		i_csr_write_enable => csr_write_enable_r,
-		i_csr_array => (others => (others => '0')),
-		i_csr_number => "00000"
-	);
-
-	t3: command_decoder_v1
-	port map (
-		i_clk => clk_r,
-		i_rst => rst_r,
-		i_instr => read_instruction_r
+		i_csr_array => csr_array_r,
+		i_csr_number => csr_number_r,
+		o_csr_array => csr_array_res_r
 	);
 
 
@@ -107,7 +60,28 @@ begin
 	begin
 		rst_r <= '1';
 		wait_clk(2);
+		wait for 1 ns;
 		rst_r <= '0';
-		wait;
+		
+		csr_number_r <= "11111";
+		csr_array_r(31) <= x"AAAAAAAA";
+		csr_write_enable_r <= '1';
+		wait_clk(1);
+		csr_write_enable_r <= '0';
+		wait_clk(1);
+
+		csr_number_r <= "11110";
+		csr_array_r(30) <= x"BBBBBBBB";
+		csr_write_enable_r <= '1';
+		wait_clk(1);
+		csr_write_enable_r <= '0';
+
+		csr_number_r <= "11111";
+		csr_array_r(31) <= x"CCCCCCCC";
+		csr_write_enable_r <= '1';
+		wait_clk(1);
+		csr_write_enable_r <= '0';
+
+        	wait;
 	end process;
-end inst_mem_verification_arch;
+end csr_verification_arch;
