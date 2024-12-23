@@ -12,6 +12,7 @@ architecture inst_mem_verification_arch of inst_mem_verification is
     	component InstructionMemory
         port (
             i_clk       : in  std_logic;
+	    i_rst       : in  std_logic;
             i_read_addr : in  std_logic_vector(15 downto 0);
             o_read_data : out std_logic_vector(31 downto 0)
         );
@@ -47,11 +48,11 @@ architecture inst_mem_verification_arch of inst_mem_verification is
  	);
 	end component;
 
-    	signal clk_r     	  : std_logic := '0';
-   	signal rst_r              : std_logic := '0';
-   	signal csr_write_enable_r : std_logic := '0';
-    	signal program_counter_r        : std_logic_vector(15 downto 0) := (others => '0');
-    	signal read_instruction_r        : std_logic_vector(31 downto 0);
+    	signal clk_s     	  : std_logic := '0';
+   	signal rst_s              : std_logic := '0';
+   	signal csr_write_enable_s : std_logic := '0';
+    	signal program_counter_s        : std_logic_vector(15 downto 0) := (others => '0');
+    	signal read_instruction_s        : std_logic_vector(31 downto 0);
 
 
 
@@ -61,7 +62,7 @@ architecture inst_mem_verification_arch of inst_mem_verification is
         	variable ii: integer := 0;
         	begin
         	while ii < j loop
-           		if (rising_edge(clk_r)) then
+           		if (rising_edge(clk_s)) then
                 		ii := ii + 1;
             		end if;
             		wait for 10 ps;
@@ -71,7 +72,7 @@ architecture inst_mem_verification_arch of inst_mem_verification is
 
 begin         
 	
-	clk_r <= not clk_r after clk_period / 2;
+	clk_s <= not clk_s after clk_period / 2;
 	
 
 	t1: InstructionMemory
@@ -79,35 +80,36 @@ begin
 		file_path => "program.hex"
 	)
         port map (
-            i_clk       => clk_r,
-            i_read_addr => program_counter_r,
-            o_read_data => read_instruction_r
+	    i_rst       => rst_s,
+            i_clk       => clk_s,
+            i_read_addr => program_counter_s,
+            o_read_data => read_instruction_s
         );
 
 
 	t2: CSR
 	port map (
-		i_clk => clk_r,
-		i_rst => rst_r,
-		o_program_counter => program_counter_r,
-		i_csr_write_enable => csr_write_enable_r,
+		i_clk => clk_s,
+		i_rst => rst_s,
+		o_program_counter => program_counter_s,
+		i_csr_write_enable => csr_write_enable_s,
 		i_csr_array => (others => (others => '0')),
 		i_csr_number => "00000"
 	);
 
 	t3: command_decoder_v1
 	port map (
-		i_clk => clk_r,
-		i_rst => rst_r,
-		i_instr => read_instruction_r
+		i_clk => clk_s,
+		i_rst => rst_s,
+		i_instr => read_instruction_s
 	);
 
 
 	process
 	begin
-		rst_r <= '1';
+		rst_s <= '1';
 		wait_clk(2);
-		rst_r <= '0';
+		rst_s <= '0';
 		wait;
 	end process;
 end inst_mem_verification_arch;
