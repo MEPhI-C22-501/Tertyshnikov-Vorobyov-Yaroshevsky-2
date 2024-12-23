@@ -5,6 +5,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity DataMemory is
     port (
         i_clk           : in  std_logic;
+	i_rst           : in  std_logic;
         i_write_enable  : in  std_logic;
         i_addr          : in  std_logic_vector(15 downto 0);
         i_write_data    : in  std_logic_vector(31 downto 0);
@@ -25,16 +26,18 @@ begin
     o_read_data <= data_r;
 	 
 	 
-    process(i_clk)
+    process(i_clk, i_rst)
     begin
-	if rising_edge(i_clk) then
+	if i_rst = '1' then
+		data_r <= (others => '0');
+	elsif rising_edge(i_clk) then
             if i_write_enable = '0' then
                 data_r <= memory(to_integer(unsigned(i_addr)));
             end if;
         end if;
     end process;
 
-    process(i_clk)
+    process(i_clk, i_rst)
     begin
 	if rising_edge(i_clk) then
             if i_write_enable = '1' then

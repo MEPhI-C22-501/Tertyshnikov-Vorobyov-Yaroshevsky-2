@@ -25,6 +25,7 @@ architecture data_mem_verification_arch of data_mem_verification is
 	component DataMemory is
     	port (
         	i_clk           : in  std_logic;
+		i_rst           : in  std_logic;
         	i_write_enable  : in  std_logic;
         	i_addr          : in  std_logic_vector(15 downto 0);
         	i_write_data    : in  std_logic_vector(31 downto 0);
@@ -32,14 +33,14 @@ architecture data_mem_verification_arch of data_mem_verification is
     	);
 	end component;
 
-    	signal clk_r     	  : std_logic := '0';
-   	signal rst_r              : std_logic := '0';
-	signal read_data_r        : std_logic_vector(31 downto 0) := (others => '0');
-	signal write_data_r       : std_logic_vector(31 downto 0) := (others => '0');
-	signal result_r           : std_logic_vector(31 downto 0) := (others => '0');
-	signal resultSrc_r        : std_logic := '1';
-	signal write_enable_r     : std_logic := '0';
-	signal data_mem_addr_r    : std_logic_vector(15 downto 0) := (others => '0');
+    	signal clk_s     	  : std_logic := '0';
+   	signal rst_s              : std_logic := '0';
+	signal read_data_s        : std_logic_vector(31 downto 0) := (others => '0');
+	signal write_data_s       : std_logic_vector(31 downto 0) := (others => '0');
+	signal result_s           : std_logic_vector(31 downto 0) := (others => '0');
+	signal resultSrc_s        : std_logic := '1';
+	signal write_enable_s     : std_logic := '0';
+	signal data_mem_addr_s    : std_logic_vector(15 downto 0) := (others => '0');
   
     	constant clk_period : time := 10 ns;
 
@@ -47,7 +48,7 @@ architecture data_mem_verification_arch of data_mem_verification is
         	variable ii: integer := 0;
         	begin
         	while ii < j loop
-           		if (rising_edge(clk_r)) then
+           		if (rising_edge(clk_s)) then
                 		ii := ii + 1;
             		end if;
             		wait for 10 ps;
@@ -57,44 +58,44 @@ architecture data_mem_verification_arch of data_mem_verification is
 
 begin         
 	
-	clk_r <= not clk_r after clk_period / 2;
+	clk_s <= not clk_s after clk_period / 2;
 	
 	t1: DataMemory
 	port map (
-		i_clk => clk_r,
-		i_write_enable => write_enable_r,
-		i_addr => data_mem_addr_r,
-		i_write_data => write_data_r,
-		o_read_data => read_data_r
+		i_clk => clk_s,
+		i_rst => rst_s,
+		i_write_enable => write_enable_s,
+		i_addr => data_mem_addr_s,
+		i_write_data => write_data_s,
+		o_read_data => read_data_s
 	);
 
 	t2: WriteBack
         port map (
-            	i_clk => clk_r,
-        	i_rst => rst_r,
-        	i_read_data => read_data_r,
+            	i_clk => clk_s,
+        	i_rst => rst_s,
+        	i_read_data => read_data_s,
         	i_ALUResult => x"AAAAAAAA", 
-        	i_resultSrc => resultSrc_r, -- '1' - alu; '0' - data memory
+        	i_resultSrc => resultSrc_s, -- '1' - alu; '0' - data memory
         	i_regWrite => '0',
-        	o_result => result_r
+        	o_result => result_s
         );
-
 
 	process
 	begin
-		data_mem_addr_r <= (others => '0');
-		write_enable_r <= '1';
-		write_data_r <= x"BBBBBBBB";
-		wait_clk(1);
-		write_enable_r <= '0';
-		
-		rst_r <= '1';
+		rst_s <= '1';
 		wait_clk(2);
 		wait for 1 ns;
-		rst_r <= '0';
+		rst_s <= '0';
+	
+		data_mem_addr_s <= (others => '0');
+		write_enable_s <= '1';
+		write_data_s <= x"BBBBBBBB";
+		wait_clk(1);
+		write_enable_s <= '0';
 		
 		wait_clk(2);
-		resultSrc_r <= '0';
+		resultSrc_s <= '0';
 		wait_clk(1);
 
 		wait;
