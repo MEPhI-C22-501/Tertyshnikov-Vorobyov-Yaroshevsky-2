@@ -8,6 +8,8 @@ entity CSR is
     port (
         i_clk        : in     std_logic;
         i_rst                  : in     std_logic;
+	i_program_counter_write_enable : in std_logic;
+	i_program_counter : in std_logic_vector(15 downto 0);
 	o_program_counter   : out std_logic_vector(15 downto 0);
 	i_csr_write_enable : in std_logic;
 	i_csr_array : in csr_array;
@@ -31,15 +33,15 @@ begin
     begin
 	if i_rst = '1' then
 		program_counter_r <= (others => '0');
-		-- pragma synthesis_off
 		registers <= (others => (others => '0'));
-		-- pragma synthesis_on
 	elsif rising_edge(i_clk) then
 		program_counter_r <= program_counter_r + '1';
 
 		if i_csr_write_enable = '1' then
 			register_number := to_integer(unsigned(i_csr_number));
 			registers(register_number) <= i_csr_array(register_number);
+		elsif i_program_counter_write_enable = '1' then
+			program_counter_r <= i_program_counter;
 		end if;
 	end if;
     end process;
