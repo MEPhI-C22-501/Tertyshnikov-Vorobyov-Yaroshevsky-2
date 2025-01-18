@@ -7,15 +7,15 @@ entity CSR_tb is
 end entity;
 
 architecture CSR_tb_arch of CSR_tb is
-    	signal clk_r        : std_logic := '0';
-    	signal rst_r        : std_logic := '0';
-	signal program_counter_r : std_logic_vector(15 downto 0) := (others => '0');
-	signal program_counter_res_r : std_logic_vector(15 downto 0) := (others => '0');
-	signal program_counter_write_enable_r : std_logic := '0';
-	signal csr_write_enable_r     : std_logic := '0';
-	signal csr_array_r : csr_array := (others => (others => '0'));
-	signal csr_array_res_r : csr_array := (others => (others => '0'));
-	signal csr_number_r : std_logic_vector(4 downto 0) := "00000";
+    	signal clk_s        : std_logic := '0';
+    	signal rst_s        : std_logic := '0';
+	signal program_counter_s : std_logic_vector(15 downto 0) := (others => '0');
+	signal program_counter_res_s : std_logic_vector(15 downto 0) := (others => '0');
+	signal program_counter_write_enable_s : std_logic := '0';
+	signal csr_write_enable_s     : std_logic := '0';
+	signal csr_array_s : csr_array := (others => (others => '0'));
+	signal csr_array_res_s : csr_array := (others => (others => '0'));
+	signal csr_number_s : std_logic_vector(4 downto 0) := "00000";
 
 	component CSR is
 	port (
@@ -45,25 +45,25 @@ architecture CSR_tb_arch of CSR_tb is
 begin
 
 t1: CSR_tester port map(
-	o_clk => clk_r,
-	o_rst => rst_r,
-	o_csr_write_enable => csr_write_enable_r,
-	o_csr_array => csr_array_r,
-	o_csr_number => csr_number_r,
-	o_program_counter => program_counter_r,
-	o_program_counter_write_enable => program_counter_write_enable_r
+	o_clk => clk_s,
+	o_rst => rst_s,
+	o_csr_write_enable => csr_write_enable_s,
+	o_csr_array => csr_array_s,
+	o_csr_number => csr_number_s,
+	o_program_counter => program_counter_s,
+	o_program_counter_write_enable => program_counter_write_enable_s
 );
 
 t2: CSR port map(
-	i_clk => clk_r,
-	i_rst => rst_r,
-	i_program_counter => program_counter_r,
-	i_program_counter_write_enable => program_counter_write_enable_r,
-	o_program_counter => program_counter_res_r,
-	i_csr_write_enable => csr_write_enable_r,
-	i_csr_array => csr_array_r,
-	i_csr_number => csr_number_r,
-	o_csr_array => csr_array_res_r
+	i_clk => clk_s,
+	i_rst => rst_s,
+	i_program_counter => program_counter_s,
+	i_program_counter_write_enable => program_counter_write_enable_s,
+	o_program_counter => program_counter_res_s,
+	i_csr_write_enable => csr_write_enable_s,
+	i_csr_array => csr_array_s,
+	i_csr_number => csr_number_s,
+	o_csr_array => csr_array_res_s
 );
 
 end CSR_tb_arch;

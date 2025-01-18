@@ -1,14 +1,11 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
-use work.ROM_pkg.all;
 
 entity ROM_tester is
 	port (
 		o_clk       : out  std_logic;
-		o_rst       : out  std_logic;
-            	o_read_addr : out  std_logic_vector(15 downto 0);
-            	i_read_data : in std_logic_vector(31 downto 0)
+            	o_addr : out  std_logic_vector(11 downto 0)
 	);
 end ROM_tester;
 
@@ -33,13 +30,9 @@ begin
 
     process
     begin
-	o_rst <= '1';
-	wait_clk(2);
-	wait for 1 ns;
-	o_rst <= '0';
-	
-        for addr in 0 to 5 loop
-            o_read_addr <= std_logic_vector(to_unsigned(addr, 16));
+	o_addr <= x"000";
+	for addr in 0 to 5 loop
+            o_addr <= std_logic_vector(to_unsigned(addr, 12));
             wait_clk(1);
         end loop;
         wait;
