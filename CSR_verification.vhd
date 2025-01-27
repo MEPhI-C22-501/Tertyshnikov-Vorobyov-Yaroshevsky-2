@@ -62,6 +62,7 @@ architecture CSR_verification_arch of CSR_verification is
   	signal registers_s : registers_array := (others => (others => '0'));
 	signal registers_res_s : registers_array := (others => (others => '0'));
     	constant clk_period : time := 10 ns;
+	signal register_number_s : std_logic_vector(4 downto 0) := "00000";
 
     	procedure wait_clk(constant j: in integer) is 
         	variable ii: integer := 0;
@@ -91,11 +92,11 @@ begin
         port map (
             	i_clk => clk_s,
         	i_rst => rst_s,
-        	i_datamem_result => read_data_s,
+        	i_datamem_result => x"00000000",
         	i_ALU_result => x"00000000",
-        	i_result_src => resultSrc_s,
+        	i_result_src => "10",
         	o_result => result_s,
-		i_CSR_result => x"AAAAAAAA"
+		i_CSR_result => read_data_s
         );
 
 	t3: LSU
@@ -103,12 +104,12 @@ begin
 		i_clk => clk_s,
 		i_rst => rst_s,
 		i_rs_csr => registers_s,
-		i_write_enable_decoder => '0',
+		i_write_enable_decoder => '1',
 		i_opcode_decoder => opcode_decoder_s,
 		i_opcode_write_decoder => opcode_write_decoder_s,
-		i_rs1_decoder => "00001",
+		i_rs1_decoder => "11111",
 		i_rs2_decoder => "00010",
-		i_rd_decoder  => "00011",
+		i_rd_decoder  => register_number_s,
 		i_rd_ans      => result_s,
 		i_imm_decoder => x"000",
 		i_spec_reg_or_memory_decoder => '1',
@@ -120,11 +121,19 @@ begin
 
 	process
 	begin
-		registers_s(1) <= x"00000003";
+		
 		rst_s <= '1';
 		wait_clk(2);
 		wait for 1 ns;
 		rst_s <= '0';
+
+		for i in 0 to 10 loop
+			registers_s(31) <= std_logic_vector(to_unsigned(i, 32));
+			register_number_s <= std_logic_vector(to_unsigned(i, 5));
+			opcode_decoder_s <= "00000000100000011"; -- LW
+			opcode_write_decoder_s <= "00000000100000011"; -- LW
+			wait_clk(1);
+		end loop;
 
 		wait;
 	end process;

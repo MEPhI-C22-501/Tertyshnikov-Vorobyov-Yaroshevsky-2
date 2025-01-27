@@ -11,14 +11,13 @@ end data_mem_verification;
 architecture data_mem_verification_arch of data_mem_verification is
     	component WriteBack is
 	port (
-        	i_clk          : in  STD_LOGIC;
-        	i_rst          : in  STD_LOGIC;
-        	i_read_data    : in  STD_LOGIC_VECTOR(31 downto 0); 
-        	i_ALUResult    : in  STD_LOGIC_VECTOR(31 downto 0); 
-        	i_resultSrc    : in  STD_LOGIC;                
-        	i_regWrite     : in  STD_LOGIC;               
-        	o_result       : out STD_LOGIC_VECTOR(31 downto 0);   
-        	o_regWrite     : out STD_LOGIC
+        	i_clk           	: in  STD_LOGIC;
+        	i_rst           	: in  STD_LOGIC;
+		  i_ALU_result     	: in  STD_LOGIC_VECTOR(31 downto 0); 
+		  i_datamem_result   : in  STD_LOGIC_VECTOR(31 downto 0); 
+		  i_CSR_result 		: in STD_LOGIC_VECTOR (31 downto 0);
+        	i_result_src       : in  STD_LOGIC_VECTOR(1 downto 0);  -- "00" - ALU; "01" - datamem; "10" - CSR                              
+        	o_result        : out STD_LOGIC_VECTOR(31 downto 0)
     	);
 	end component;
 
@@ -43,9 +42,7 @@ architecture data_mem_verification_arch of data_mem_verification is
         	i_rs_csr : in registers_array;
         	i_spec_reg_or_memory_decoder : in std_logic; --????????? ? ???????? ?????? ???? 1, ?? ?????? ?? ???? ?????????, ???? 0 ?? ?? ?????? 
         	i_program_counter_csr : in std_logic_vector (15 downto 0); --?????? ??????? 
-        	i_addr_spec_reg_decoder : in std_logic_vector (11 downto 0); --????????? ? ???????? ?????? ????? ????? ?? ???????? 
-        	i_spec_reg_data_csr : in std_logic_vector (31 downto 0); --????????? ? ???????? ??????, ??? ????? ?????????? ????? write_back 
-
+        	
         	o_opcode_alu : out std_logic_vector (16 downto 0);
         	o_rs_csr : out registers_array;
         	o_rs1_alu, o_rs2_alu : out std_logic_vector (31 downto 0);
@@ -82,10 +79,11 @@ architecture data_mem_verification_arch of data_mem_verification is
 	signal data_mem_addr_res_s    : std_logic_vector(15 downto 0) := (others => '0');
 	signal write_enable_decoder_s : std_logic := '0';
 	signal instruction_s : std_logic_vector(16 downto 0) := "00000000100100011";
-	signal opcode_decoder_s  : std_logic_vector(16 downto 0) := instruction_s;
+	signal opcode_decoder_s  : std_logic_vector(16 downto 0) := "00000000000000000";
 	signal opcode_write_decoder_s  : std_logic_vector(16 downto 0) := "00000000000000000";
   	signal registers_s : registers_array := (others => (others => '0'));
 	signal registers_res_s : registers_array := (others => (others => '0'));
+	signal rd_decoder_s : std_logic_vector(4 downto 0) := "00000";
     	constant clk_period : time := 10 ns;
 
     	procedure wait_clk(constant j: in integer) is 
@@ -118,10 +116,10 @@ begin
         port map (
             	i_clk => clk_s,
         	i_rst => rst_s,
-        	i_read_data => read_data_s,
-        	i_ALUResult => x"AAAAAAAA",
-        	i_resultSrc => resultSrc_s, -- '1' - alu; '0' - data memory
-        	i_regWrite => '0',
+        	i_datamem_result => read_data_s,
+        	i_ALU_result => x"AAAAAAAA",
+        	i_result_src => "01",
+		i_CSR_result => x"00000000",
         	o_result => result_s
         );
 
@@ -135,18 +133,16 @@ begin
 		i_opcode_write_decoder => opcode_write_decoder_s,
 		i_rs1_decoder => "00001",
 		i_rs2_decoder => "00010",
-		i_rd_decoder  => "00011",
+		i_rd_decoder  => rd_decoder_s,
 		i_rd_ans      => result_s,
 		i_imm_decoder => x"000",
 		i_spec_reg_or_memory_decoder => '0',
 		i_program_counter_csr => x"0000",
-		i_addr_spec_reg_decoder => x"000",
-		i_spec_reg_data_csr => x"00000000",
 
-		o_write_enable_memory => write_enable_s,
-		o_addr_memory => data_mem_addr_s,
 		o_write_data_memory => write_data_s,
-		o_rs_csr => registers_res_s
+		o_addr_memory => data_mem_addr_s,
+		o_rs_csr => registers_res_s,
+		o_write_enable_memory => write_enable_s
 	);
 
 	t4: LSUMEM
@@ -162,26 +158,46 @@ begin
         	o_write_data_memory => write_data_res_s
 	);
 
+
 	process
 	begin
-		registers_s(1) <= x"00000001";
-		registers_s(2) <= x"AAAAAAAA";
+		write_enable_decoder_s <= '0';
+		wait_clk(34);
+		write_enable_decoder_s <= '1';
+		wait;
+	end process;
+
+	process
+	begin
+		wait_clk(34);
+		
+		for i in 2 to 31 loop
+			rd_decoder_s <= std_logic_vector(to_unsigned(i, 5));
+			opcode_write_decoder_s <= "00000000100000011"; -- LW
+			wait_clk(1);
+		end loop;
+		wait;
+	end process;
+
+	process
+	begin
 		rst_s <= '1';
 		wait_clk(2);
 		wait for 1 ns;
 		rst_s <= '0';
-
+		for i in 2 to 31 loop
+			registers_s(1) <= std_logic_vector(to_unsigned(i, 32));
+			registers_s(2) <= std_logic_vector(to_unsigned(i, 32));
+			opcode_decoder_s <= "00000000100100011"; -- SW
+			
+			wait_clk(1);
+		end loop;
 		wait_clk(1);
-		opcode_write_decoder_s <= instruction_s; -- store
-		write_enable_decoder_s <= '1';
-		wait_clk(3);
-		
-		instruction_s <= "00000000100000011"; -- load
-		opcode_write_decoder_s <= "00000000100000011";
-		opcode_decoder_s <= "00000000100000011";
-		write_enable_decoder_s <= '0';
-		wait_clk(1);
-		write_enable_decoder_s <= '1';
+		for i in 2 to 31 loop
+			registers_s(1) <= std_logic_vector(to_unsigned(i, 32));
+			opcode_decoder_s <= "00000000100000011"; -- LW
+			wait_clk(1);
+		end loop;
 
 		wait;
 	end process;
