@@ -12,7 +12,7 @@ entity InstructionMemory is
     port (
         i_clk       : in  std_logic;
 	i_rst       : in  std_logic;
-        i_read_addr : in  std_logic_vector(15 downto 0);
+        i_read_addr : in  std_logic_vector(12 downto 0);
         o_read_data : out std_logic_vector(31 downto 0)
     );
 end InstructionMemory;

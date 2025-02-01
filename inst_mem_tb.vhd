@@ -11,7 +11,7 @@ architecture inst_mem_tb_arch of inst_mem_tb is
         port (
             i_clk       : in  std_logic;
 	    i_rst       : in  std_logic;
-            i_read_addr : in  std_logic_vector(15 downto 0);
+            i_read_addr : in  std_logic_vector(12 downto 0);
             o_read_data : out std_logic_vector(31 downto 0)
         );
     end component;
@@ -20,14 +20,14 @@ architecture inst_mem_tb_arch of inst_mem_tb is
 	port (
 		o_clk       : out  std_logic;
 		o_rst       : out  std_logic;
-            	o_read_addr : out  std_logic_vector(15 downto 0);
+            	o_read_addr : out  std_logic_vector(12 downto 0);
             	i_read_data : in std_logic_vector(31 downto 0)
 	);
     end component;
 
     signal clk_s       : std_logic := '0';
     signal rst_s       : std_logic := '0';
-    signal read_addr_s : std_logic_vector(15 downto 0) := (others => '0');
+    signal read_addr_s : std_logic_vector(12 downto 0) := (others => '0');
     signal read_data_s : std_logic_vector(31 downto 0);
 
 begin         

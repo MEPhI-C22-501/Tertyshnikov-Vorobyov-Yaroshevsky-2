@@ -26,7 +26,7 @@ architecture data_mem_verification_arch of data_mem_verification is
         	i_clk           : in  std_logic;
 		i_rst           : in  std_logic;
         	i_write_enable  : in  std_logic;
-        	i_addr          : in  std_logic_vector(15 downto 0);
+        	i_addr          : in  std_logic_vector(12 downto 0);
         	i_write_data    : in  std_logic_vector(31 downto 0);
         	o_read_data     : out std_logic_vector(31 downto 0)
     	);
@@ -107,7 +107,7 @@ begin
 		i_clk => clk_s,
 		i_rst => rst_s,
 		i_write_enable => write_enable_res_s,
-		i_addr => data_mem_addr_res_s,
+		i_addr => data_mem_addr_res_s(12 downto 0),
 		i_write_data => write_data_res_s,
 		o_read_data => read_data_s
 	);

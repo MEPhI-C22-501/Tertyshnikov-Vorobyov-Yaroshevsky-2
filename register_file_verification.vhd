@@ -13,8 +13,8 @@ architecture register_file_verification_arch of register_file_verification is
 		i_clk        : in     std_logic;
         	i_rst                  : in     std_logic;
 		i_program_counter_write_enable : in std_logic;
-		i_program_counter : in std_logic_vector(15 downto 0);
-		o_program_counter   : out std_logic_vector(15 downto 0);
+		i_program_counter : in std_logic_vector(12 downto 0);
+		o_program_counter   : out std_logic_vector(12 downto 0);
 		i_registers_write_enable : in std_logic;
 		i_registers_array : in registers_array;
 		i_registers_number : in std_logic_vector(4 downto 0);
@@ -51,8 +51,8 @@ architecture register_file_verification_arch of register_file_verification is
 	signal registers_number_s       : std_logic_vector(4 downto 0) := "00011";
 	signal registers_number3_s       : std_logic_vector(4 downto 0) := "00011";
 	signal registers_number_res_s       : std_logic_vector(4 downto 0) := "00011";
-    	signal program_counter_s  : std_logic_vector(15 downto 0) := (others => '0');
-	signal program_counter_res_s  : std_logic_vector(15 downto 0) := (others => '0');
+    	signal program_counter_s  : std_logic_vector(12 downto 0) := (others => '0');
+	signal program_counter_res_s  : std_logic_vector(12 downto 0) := (others => '0');
 	signal program_counter_write_enable_s  : std_logic := '0';
     	constant clk_period       : time := 10 ns;
 	signal registers_array_s        : registers_array := (others => (others => '0'));
@@ -106,7 +106,7 @@ begin
 		i_rd_decoder  => registers_number3_s, -- - ?????????? - 
 		i_rd_ans      => data_s, -- ??? ????????? ?? writeback
 		i_imm_decoder => x"000", -- ????? ?????
-		i_program_counter_csr => program_counter_res_s, -- ??????? ?????? ?? ?????????
+		i_program_counter_csr => x"AAAA", -- ??????? ?????? ?? ?????????
 		i_spec_reg_or_memory_decoder => '0',
 		
 		o_write_enable_csr => registers_write_enable_s,
@@ -124,19 +124,19 @@ begin
 		rst_s <= '0';
 
 		for i in 1 to 31 loop
-			opcode_decoder_s <= "00000000100000011"; -- LW
+			opcode_decoder_s <= "00000000010000011"; -- LH
 			write_enable_decoder_s <= '1';
-			data_s <= std_logic_vector(to_unsigned(i, 32));
+			data_s <= x"FFFFFFFF";
 			registers_number3_s <= std_logic_vector(to_unsigned(i, 5));
-			opcode_write_decoder_s <= "00000000100000011"; -- LW
+			opcode_write_decoder_s <= "00000000010000011"; -- LH
 			wait_clk(1);
 		end loop;
 
 		for i in 1 to 31 loop
 			write_enable_decoder_s <= '0';
-			opcode_decoder_s <= "00000000100100011"; -- SW
+			opcode_decoder_s <= "00000000010100011"; -- SH
 			registers_number_s <= std_logic_vector(to_unsigned(i, 5));
-			opcode_write_decoder_s <= "00000000100100011"; -- SW
+			opcode_write_decoder_s <= "00000000010100011"; -- SH
 			wait_clk(1);
 		end loop;
 
