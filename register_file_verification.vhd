@@ -13,8 +13,8 @@ architecture register_file_verification_arch of register_file_verification is
 		i_clk        : in     std_logic;
         	i_rst                  : in     std_logic;
 		i_program_counter_write_enable : in std_logic;
-		i_program_counter : in std_logic_vector(12 downto 0);
-		o_program_counter   : out std_logic_vector(12 downto 0);
+		i_program_counter : in std_logic_vector(15 downto 0);
+		o_program_counter   : out std_logic_vector(15 downto 0);
 		i_registers_write_enable : in std_logic;
 		i_registers_array : in registers_array;
 		i_registers_number : in std_logic_vector(4 downto 0);
@@ -51,8 +51,8 @@ architecture register_file_verification_arch of register_file_verification is
 	signal registers_number_s       : std_logic_vector(4 downto 0) := "00011";
 	signal registers_number3_s       : std_logic_vector(4 downto 0) := "00011";
 	signal registers_number_res_s       : std_logic_vector(4 downto 0) := "00011";
-    	signal program_counter_s  : std_logic_vector(12 downto 0) := (others => '0');
-	signal program_counter_res_s  : std_logic_vector(12 downto 0) := (others => '0');
+    	signal program_counter_s  : std_logic_vector(15 downto 0) := (others => '0');
+	signal program_counter_res_s  : std_logic_vector(15 downto 0) := (others => '0');
 	signal program_counter_write_enable_s  : std_logic := '0';
     	constant clk_period       : time := 10 ns;
 	signal registers_array_s        : registers_array := (others => (others => '0'));

@@ -9,8 +9,8 @@ entity RegisterFile is
         i_clk        : in     std_logic;
         i_rst                  : in     std_logic;
 	i_program_counter_write_enable : in std_logic;
-	i_program_counter : in std_logic_vector(12 downto 0);
-	o_program_counter   : out std_logic_vector(12 downto 0);
+	i_program_counter : in std_logic_vector(15 downto 0);
+	o_program_counter   : out std_logic_vector(15 downto 0);
 	i_registers_write_enable : in std_logic;
 	i_registers_array : in registers_array;
 	i_registers_number : in std_logic_vector(4 downto 0);
@@ -20,7 +20,7 @@ end RegisterFile;
 
 architecture beh of RegisterFile is
     	signal registers : registers_array := (others => (others => '0'));
-	signal program_counter_r : std_logic_vector(12 downto 0) := (others => '0');
+	signal program_counter_r : std_logic_vector(15 downto 0) := (others => '0');
 
 begin     
 

@@ -10,7 +10,7 @@ entity RegisterFile_tester is
 		o_registers_write_enable     : out     std_logic;
 		o_registers_array : out registers_array;
 		o_registers_number : out std_logic_vector(4 downto 0);
-		o_program_counter : out std_logic_vector(12 downto 0);
+		o_program_counter : out std_logic_vector(15 downto 0);
 		o_program_counter_write_enable : out std_logic
     	);
 end RegisterFile_tester;
@@ -44,7 +44,7 @@ begin
         o_rst <= '0';
 	wait_clk(1);
 
-	o_program_counter <= "0101010101010";
+	o_program_counter <= x"AAAA";
 	o_program_counter_write_enable <= '1';
 	wait_clk(1);
 	o_program_counter_write_enable <= '0';
