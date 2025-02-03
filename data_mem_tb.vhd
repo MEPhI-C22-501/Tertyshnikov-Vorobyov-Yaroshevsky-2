@@ -10,7 +10,7 @@ architecture data_mem_tb_arch of data_mem_tb is
     	signal clk_s        : std_logic := '0';
 	signal rst_s        : std_logic := '0';
     	signal write_enable_s   : std_logic := '0';
-    	signal addr_s : std_logic_vector(12 downto 0) := (others => '0');
+    	signal addr_s : std_logic_vector(15 downto 0) := (others => '0');
     	signal write_data_s : std_logic_vector(31 downto 0) := (others => '0');
 	signal read_data_s : std_logic_vector(31 downto 0) := (others => '0');
     	
@@ -19,7 +19,7 @@ architecture data_mem_tb_arch of data_mem_tb is
 		i_clk        : in  std_logic;
 		i_rst        : in  std_logic;
  	       	i_write_enable   : in  std_logic;
-        	i_addr : in  std_logic_vector(12 downto 0);
+        	i_addr : in  std_logic_vector(15 downto 0);
         	i_write_data : in  std_logic_vector(31 downto 0);
 		o_read_data : out std_logic_vector(31 downto 0)
         );
@@ -30,7 +30,7 @@ architecture data_mem_tb_arch of data_mem_tb is
 		o_clk        : out  std_logic;
 		o_rst        : out  std_logic;
             	o_write_enable : out  std_logic;
-            	o_addr : out  std_logic_vector(12 downto 0);
+            	o_addr : out  std_logic_vector(15 downto 0);
             	o_write_data : out  std_logic_vector(31 downto 0);
 		i_read_data : in std_logic_vector(31 downto 0)
         );
