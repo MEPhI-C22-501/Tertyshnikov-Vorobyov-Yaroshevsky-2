@@ -7,7 +7,7 @@ entity inst_mem_tester is
 	port (
 		o_clk       : out  std_logic;
 		o_rst       : out  std_logic;
-            	o_read_addr : out  std_logic_vector(12 downto 0);
+            	o_read_addr : out  std_logic_vector(15 downto 0);
             	i_read_data : in std_logic_vector(31 downto 0)
 	);
 end inst_mem_tester;
@@ -39,9 +39,10 @@ begin
 	o_rst <= '0';
 	
         for addr in 0 to 5 loop
-            o_read_addr <= std_logic_vector(to_unsigned(addr, 13));
+            o_read_addr <= std_logic_vector(to_unsigned(addr, 16));
             wait_clk(1);
         end loop;
+	o_read_addr <= x"FFFF";
         wait;
     end process;
 

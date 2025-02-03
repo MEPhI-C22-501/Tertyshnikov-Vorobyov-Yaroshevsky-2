@@ -12,7 +12,7 @@ entity InstructionMemory is
     port (
         i_clk       : in  std_logic;
 	i_rst       : in  std_logic;
-        i_read_addr : in  std_logic_vector(12 downto 0);
+        i_read_addr : in  std_logic_vector(15 downto 0);
         o_read_data : out std_logic_vector(31 downto 0)
     );
 end InstructionMemory;
@@ -29,7 +29,11 @@ begin
 		if i_rst = '1' then
 			read_data_r <= (others => '0');
 		elsif rising_edge(i_clk) then
-			read_data_r <= mem(to_integer(unsigned(i_read_addr)));
+			if i_read_addr(15 downto 13) = "000" then
+				read_data_r <= mem(to_integer(unsigned(i_read_addr(12 downto 0))));
+			else
+				read_data_r <= (others => '0');
+			end if;
 		end if;
 	end process;
 end inst_mem_beh;
