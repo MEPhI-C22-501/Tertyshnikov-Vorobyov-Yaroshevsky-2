@@ -18,7 +18,7 @@ architecture data_mem_tester_arch of data_mem_tester is
     signal clk_s : std_logic := '0';
 
 	constant ADDR0 : std_logic_vector(15 downto 0) := x"0000";
-	constant ADDR1 : std_logic_vector(15 downto 0) := x"0AAA";
+	constant ADDR1 : std_logic_vector(15 downto 0) := x"00AA";
 	constant ADDR2 : std_logic_vector(15 downto 0) := x"FFFF";
 
     procedure wait_clk(constant j: in integer) is 
