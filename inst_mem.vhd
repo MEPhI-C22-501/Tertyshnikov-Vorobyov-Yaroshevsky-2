@@ -29,8 +29,8 @@ begin
 		if i_rst = '1' then
 			read_data_r <= (others => '0');
 		elsif rising_edge(i_clk) then
-			if i_read_addr(15 downto 13) = "000" then
-				read_data_r <= mem(to_integer(unsigned(i_read_addr(12 downto 0))));
+			if i_read_addr(15 downto 12) = "0000" then
+				read_data_r <= mem(to_integer(unsigned(i_read_addr(11 downto 0))));
 			else
 				read_data_r <= (others => '0');
 			end if;
